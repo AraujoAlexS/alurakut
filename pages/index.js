@@ -2,9 +2,10 @@ import React from 'react';
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutProfileSidebarMenuDefault  } from '../src/lib/AlurakutCommons.js'
-import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
+import { ProfileRelationsBoxWrapper, ProfileRelationsBoxWrapperComponent } from '../src/components/ProfileRelations';
 
 function ProfileSideBar(props){
+  console.log(props)
   return (
     <Box >
       <img src={`https://github.com/${props.githubUser}.png`} style={{borderRadius: "4px"}}/>
@@ -21,9 +22,44 @@ function ProfileSideBar(props){
 export default function Home() {
   
   const githubUser = 'juunegreiros' 
-  const pessoasFavoritas = ['juunegreiros', 'peas', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'AraujoAlexS'];
+  const pessoasFavoritas = [
+    {
+      id: 'juunegreiros',
+      name: 'juunegreiros',
+      image: 'https://github.com/juunegreiros.png'
+    },
+    {
+      id: 'peas',
+      name: 'peas',
+      image: 'https://github.com/peas.png'
+    },
+    {
+      id: 'omariosouto',
+      name: 'omariosouto',
+      image: 'https://github.com/omariosouto.png'
+    },
+    {
+      id: 'rafaballerini',
+      name: 'rafaballerini',
+      image: 'https://github.com/rafaballerini.png'
+    },
+    {
+      id: 'marcobrunodev',
+      name: 'marcobrunodev',
+      image: 'https://github.com/marcobrunodev.png'
+    },
+    {
+      id: 'AraujoAlexS',
+      name: 'AraujoAlexS',
+      image: `https://github.com/AraujoAlexS.png`
+    },
+    {
+      id: 'AraujoAlexS',
+      name: 'AraujoAlexS',
+      image: `https://github.com/AraujoAlexS.png`
+    }];
   const [comunidades, setComunidades] = React.useState([{
-    date: new Date().toISOString(),
+    id: new Date().toISOString(),
     title: "Eu odeio acordar cedo",
     image: "https://alurakut.vercel.app/capa-comunidade-01.jpg"
   }]);
@@ -50,7 +86,7 @@ export default function Home() {
               e.preventDefault();
               const dadosDoForm = new FormData(e.target);
               const comunidadeObj = {
-                date: new Date().toISOString(),
+                id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
                 image: dadosDoForm.get('image'),
               }
@@ -78,37 +114,8 @@ export default function Home() {
           </Box>
         </div>
         <div className='profileRelationsArea' style={{gridArea: 'profileRelationsArea'}}>
-          <ProfileRelationsBoxWrapper>
-            <h2 className='smallTitle'>
-              Pessoas da comunidade ({pessoasFavoritas.length})
-            </h2>
-            <ul>
-              {pessoasFavoritas.map((githubUser)=> {
-                return (
-                  <li>
-                    <a href={`/users/${githubUser}`} key={githubUser}>
-                      <img src={`https://github.com/${githubUser}.png`}/>
-                      <span>{githubUser}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-          <ProfileRelationsBoxWrapper>
-            <ul>
-              {comunidades.map((comunidade)=> {
-                return (
-                  <li key={comunidade.date}>
-                    <a href={`/users/${comunidade.title}`} >
-                      <img src={comunidade.image}/>
-                      <span>{comunidade.title}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          <ProfileRelationsBoxWrapperComponent array={comunidades}/>
+          <ProfileRelationsBoxWrapperComponent array={pessoasFavoritas}/>
         </div>
       </MainGrid>
     </>)

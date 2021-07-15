@@ -5,7 +5,6 @@ import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutProfileSidebarMenuDefault 
 import { ProfileRelationsBoxWrapper, ProfileRelationsBoxWrapperComponent } from '../src/components/ProfileRelations';
 
 function ProfileSideBar(props){
-  console.log(props)
   return (
     <Box >
       <img src={`https://github.com/${props.githubUser}.png`} style={{borderRadius: "4px"}}/>
@@ -20,53 +19,33 @@ function ProfileSideBar(props){
 }
 
 export default function Home() {
-  
-  const githubUser = 'juunegreiros' 
-  const pessoasFavoritas = [
-    {
-      id: 'juunegreiros',
-      name: 'juunegreiros',
-      image: 'https://github.com/juunegreiros.png'
-    },
-    {
-      id: 'peas',
-      name: 'peas',
-      image: 'https://github.com/peas.png'
-    },
-    {
-      id: 'omariosouto',
-      name: 'omariosouto',
-      image: 'https://github.com/omariosouto.png'
-    },
-    {
-      id: 'rafaballerini',
-      name: 'rafaballerini',
-      image: 'https://github.com/rafaballerini.png'
-    },
-    {
-      id: 'marcobrunodev',
-      name: 'marcobrunodev',
-      image: 'https://github.com/marcobrunodev.png'
-    },
-    {
-      id: 'AraujoAlexS',
-      name: 'AraujoAlexS',
-      image: `https://github.com/AraujoAlexS.png`
-    },
-    {
-      id: 'AraujoAlexS',
-      name: 'AraujoAlexS',
-      image: `https://github.com/AraujoAlexS.png`
-    }];
+  const [seguidores, setSeguidores] = React.useState([]);
+  React.useEffect(function(){
+    fetch('https://api.github.com/users/peas/followers')
+    .then(function (respostaDoServidor){
+      if(respostaDoServidor.ok){
+        return respostaDoServidor.json();
+      }
+      throw new Error('Aconteceu algo ' + respostaDoServidor.status);
+    })
+    .then(function (respostaCompleta){
+      setSeguidores(respostaCompleta)
+    })
+    .catch(function (erro){
+      console.log(erro);
+    })
+  }, [])
+  const githubUser = 'AraujoAlexS';
+ 
   const [comunidades, setComunidades] = React.useState([{
     id: new Date().toISOString(),
-    title: "Eu odeio acordar cedo",
-    image: "https://alurakut.vercel.app/capa-comunidade-01.jpg"
+    login: "Eu odeio acordar cedo",
+    avatar_url: "https://alurakut.vercel.app/capa-comunidade-01.jpg"
   }]);
 
   return (
     <>
-      <AlurakutMenu/>
+      <AlurakutMenu githubUser={githubUser}/>
       <MainGrid>
         <div className='profileArea' style={{gridArea: 'profileArea'}}>
             <ProfileSideBar githubUser={githubUser}/>    
@@ -114,8 +93,8 @@ export default function Home() {
           </Box>
         </div>
         <div className='profileRelationsArea' style={{gridArea: 'profileRelationsArea'}}>
-          <ProfileRelationsBoxWrapperComponent array={comunidades}/>
-          <ProfileRelationsBoxWrapperComponent array={pessoasFavoritas}/>
+          <ProfileRelationsBoxWrapperComponent title='Comunidades' array={comunidades}/>
+          <ProfileRelationsBoxWrapperComponent title='Amigos do Github' array={seguidores}/>
         </div>
       </MainGrid>
     </>)

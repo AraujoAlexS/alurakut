@@ -56,15 +56,15 @@ export function ProfileRelationsBoxWrapperComponent(props){
   return(
     <ProfileRelationsBoxWrapper>
       <h2 className='smallTitle'>
-        Pessoas da comunidade ({props.array.length})
+        {props.title} ({props.array.length})
       </h2>
       <ul>
         {props.array.slice(0,6).map((item)=> {
           return (
-            <li>
-              <a href={`/users/${item.name}`} key={item.id}>
-                  <img src={item.image}/>
-                  <span>{item.name}</span>
+            <li key={item.id}>
+              <a href={`/users/${item.login}`}>
+                  <img src={item.avatar_url}/>
+                  <span>{item.login}</span>
               </a>
             </li>
           )

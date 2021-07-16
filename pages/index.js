@@ -89,17 +89,33 @@ export default function Home() {
               e.preventDefault();
               const dadosDoForm = new FormData(e.target);
               const comunidadeObj = {
-                id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
-                image: dadosDoForm.get('image'),
+                imageUrl: dadosDoForm.get('image'),
+                creatorSlug: githubUser,
               }
-              const comunidadesAtualizadas = [...comunidades, comunidadeObj];
-              setComunidades(comunidadesAtualizadas);
+              
+              fetch('api/comunidades', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comunidadeObj)
+              })
+              .then(async (res) => {
+                const dados = await res.json();
+                console.log(dados);
+                const novaComunidade = dados.novoRegistro;
+                const comunidadesAtualizadas = [...comunidades, novaComunidade];
+                setComunidades(comunidadesAtualizadas);
+              })
+
+              //
+
             }}>
               <div>
                 <input 
                 placeholder='Qual vai ser o nome da sua comunidade?' 
-                name='tilte' 
+                name='title' 
                 area-label="Qual vai ser o nome da sua comunidade?"
                 type='text'
                 />

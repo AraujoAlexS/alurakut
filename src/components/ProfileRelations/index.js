@@ -52,7 +52,6 @@ export const ProfileRelationsBoxWrapper = styled(Box)`
 `;
 
 export function ProfileRelationsBoxWrapperComponent(props){
-
   return(
     <ProfileRelationsBoxWrapper>
       <h2 className='smallTitle'>
@@ -60,11 +59,14 @@ export function ProfileRelationsBoxWrapperComponent(props){
       </h2>
       <ul>
         {props.array.slice(0,6).map((item)=> {
+          const title = props.title == 'Comunidades'? '/comunidade/': '/amigo/';
+          const name = item.hasOwnProperty('login')? item.login : item.title; 
+          const img = item.hasOwnProperty('login')? item.avatar_url : item.imageUrl;
           return (
             <li key={item.id}>
-              <a href={`/users/${item.login}`}>
-                  <img src={item.avatar_url}/>
-                  <span>{item.login}</span>
+              <a href={`${title + name}`}>
+                  <img src={img}/>
+                  <span>{name}</span>
               </a>
             </li>
           )

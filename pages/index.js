@@ -19,7 +19,8 @@ function ProfileSideBar(props){
 }
 
 export default function Home() {
-  const [seguidores, setSeguidores] = React.useState([]);
+  const [seguidores, setSeguidores] = React.useState([]);  
+  const [comunidades, setComunidades] = React.useState([]);
   React.useEffect(function(){
     fetch('https://api.github.com/users/peas/followers')
     .then(function (respostaDoServidor){
@@ -34,14 +35,37 @@ export default function Home() {
     .catch(function (erro){
       console.log(erro);
     })
+
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': '9a96436213b397459052a7140cfb04',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(
+        { "query": `query {
+            allCommunities {
+              id
+              title
+              imageUrl
+              creatorSlug
+            }
+          }`
+        })
+    })
+    .then(res => res.json())
+    .then((res) => {
+      const comunidadesDato = res.data.allCommunities;
+      setComunidades(comunidadesDato);
+      console.log(comunidades)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }, [])
   const githubUser = 'AraujoAlexS';
  
-  const [comunidades, setComunidades] = React.useState([{
-    id: new Date().toISOString(),
-    login: "Eu odeio acordar cedo",
-    avatar_url: "https://alurakut.vercel.app/capa-comunidade-01.jpg"
-  }]);
 
   return (
     <>

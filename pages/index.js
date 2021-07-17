@@ -1,4 +1,6 @@
 import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutProfileSidebarMenuDefault  } from '../src/lib/AlurakutCommons.js'
@@ -18,7 +20,9 @@ function ProfileSideBar(props){
   )
 }
 
-export default function Home() {
+export default function Home(props) {
+  
+  const githubUser = props.githubUser;
   const [seguidores, setSeguidores] = React.useState([]);  
   const [comunidades, setComunidades] = React.useState([]);
   React.useEffect(function(){
@@ -64,7 +68,6 @@ export default function Home() {
       console.log(error)
     })
   }, [])
-  const githubUser = 'AraujoAlexS';
  
 
   return (
@@ -138,4 +141,35 @@ export default function Home() {
         </div>
       </MainGrid>
     </>)
+}
+
+export async function getServerSideProps(ctx){
+    const cookies = nookies.get(ctx);
+    const token = cookies.USER_TOKEN;
+    const { githubUser } = jwt.decode(token);
+    
+    const isUser = await fetch(`https://github.com/${githubUser}`)
+    .then( async (resposta) => {
+      if(resposta.status === 404){
+        return false;
+      } else {
+        return true;
+      }
+    });
+    console.log('isAuthenticated', isUser);
+    
+    if(!isUser){
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false
+        }
+      }
+    }
+    
+    return {
+      props: {
+        githubUser
+      },
+    }
 }
